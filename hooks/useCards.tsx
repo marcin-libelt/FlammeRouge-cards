@@ -5,9 +5,9 @@
  * @format
  */
 
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useState, useRef, useCallback} from 'react';
 import { shuffle } from '../helpers/arrays';
-import { roulerCards, sprinterCards } from '../data';
+import { roulerCards, sprinterCards, revealInterval } from '../data';
 
 const useCards = () => {
   
@@ -15,16 +15,29 @@ const useCards = () => {
   const [stash, setStash] = useState<string[]>([])
   const [deck, setDeck] = useState<string[]>(shuffle(roulerCards))
   const [selectedCard, setSelectedCard] = useState<string[]>([])
+  const [isRevealed, setIsRevealed] = useState<boolean>(false)
+  
+  let revealedCardsIntervalId = useRef(0);
 
+  
   const resetCards = () => {
     setDeck(roulerCards)
     setHand([])
     setStash([])
     setSelectedCard([])
   }
-  
-  const chooseACard = (index: number) => {
-    
+
+  const revealCards = useCallback(() => {    
+    clearInterval(revealedCardsIntervalId.current);
+    setIsRevealed(true);
+
+    const intervalId = setTimeout(() => {
+      setIsRevealed(false);
+    }, 3 * 1000);
+    revealedCardsIntervalId.current = intervalId;
+  }, []);
+
+  const selectCard = useCallback((index: number) => {
     let thisHand = [...hand] // 2239
     let selected = thisHand.splice(index, 1);
     let newStash = [...stash].concat(thisHand)
@@ -32,15 +45,15 @@ const useCards = () => {
     setStash(newStash)
     setSelectedCard(selected)
     setHand([])
-  }
+  }, [hand, stash]);
 
-  const addExhaustedCard = () => {
+  const addExhaustedCard = useCallback(() => {
     let newStash = [...stash]
     newStash.push('2')
     setStash(newStash)
-  }
+  }, [stash]);
 
-  const drawCards = () => {
+  const drawCards = useCallback(() => {
     let temporaryHand: string[] = [];
 
     let newDeck = [...deck]
@@ -72,17 +85,19 @@ const useCards = () => {
     }
 
     setHand(temporaryHand);  
-  }
+  }, [deck, stash]);
 
   return {
     addExhaustedCard: addExhaustedCard,
-    chooseACard: chooseACard,
+    selectCard: selectCard,
     drawCards: drawCards,
     resetCards: resetCards,
+    revealCards: revealCards,
     deck: deck,
     hand: hand,
     stash: stash,
-    selectedCard: selectedCard
+    selectedCard: selectedCard,
+    isRevealed: isRevealed
   }
 };
 

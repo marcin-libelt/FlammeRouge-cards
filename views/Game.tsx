@@ -29,76 +29,23 @@ import {
 } from 'react-native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
-
 import CardBoard from '../components/CardBoard';
 import useCards from '../hooks/useCards';
-import Card from '../components/Card';
-import { revealInterval} from '../data';
-
-type RandomCardsProps = PropsWithChildren<{
-  hand: string[],
-  cardHandler: Function,
-  isRevealed: boolean
-}>;
-
-function RandomCards({children, hand, cardHandler, isRevealed}: RandomCardsProps): JSX.Element {
-  return (
-    <View>
-      <Text style={{
-        marginBottom: 10,
-        color: 'black',
-        }}>
-          {`Choose one card to play`}
-      </Text>
-      <View style={
-        styles.handCardsLayout
-      }>
-        {hand.map((cardValue, index) => (
-          <View
-            key={Math.random() * 100}
-            style={{
-              width: '48%',
-              marginBottom: '2%'
-            }}
-          >
-            <Card    
-              onPress={() => cardHandler(index)} 
-              value={cardValue}
-              isRevealed={isRevealed}
-              />
-          </View>
-        ))}
-      </View>
-      {children}
-    </View>
-  )
-}
+import CardDrawer from '../components/CardDrawer';
 
 function Game({navigation}: NavigationAction): JSX.Element {
   const {
     addExhaustedCard,
-    chooseACard,
+    selectCard,
     drawCards,
     resetCards,
+    revealCards,
     deck,
     hand,
     stash,
     selectedCard,
+    isRevealed
   } = useCards();
-
-  let revealedCardsIntervalId = useRef(0);
-
-  const [isRevealed, setIsRevealed] = useState<boolean>(false)
-  const revealCards = () => {    
-
-    clearInterval(revealedCardsIntervalId.current);
-    setIsRevealed(true);
-
-    const intervalId = setTimeout(() => {
-      setIsRevealed(false);
-    }, 3 * 1000);
-    revealedCardsIntervalId.current = intervalId;
-  };
 
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -128,23 +75,32 @@ function Game({navigation}: NavigationAction): JSX.Element {
             <Text>Stash: { stash.map((n) => `◼️`)}</Text>
           </View>
           <Button title='ReInit Deck' onPress={resetCards} />
-          <Button disabled={hand.length > 0} title='Get 4 Random Cards' onPress={drawCards} />
+
+          <Button disabled={hand.length > 0} title='Draw 4 Cards' onPress={drawCards} />
+
+
           <CardBoard> 
             {hand.length > 0 ? (
-              <RandomCards
+              <CardDrawer
                 hand={hand} 
-                cardHandler={chooseACard} 
+                selectCard={selectCard} 
                 isRevealed={isRevealed}
               >
                 <Button 
                   onPress={revealCards} 
-                  title='Show cards'
-                  
+                  title='Preview cards'
+                  disabled={isRevealed}
                 />
-              </RandomCards>
+              </CardDrawer>
             ) : null}
           </CardBoard>
-          <Button disabled={!deck.length && !stash.length && !stash.length} title={`Add exhausting card`} onPress={addExhaustedCard} />
+
+
+
+          <Button
+            disabled={!deck.length && !stash.length && !stash.length}
+            title={`Add exhausting card`} onPress={addExhaustedCard} 
+          />
         </View>
         <View
           style={{
@@ -163,27 +119,7 @@ function Game({navigation}: NavigationAction): JSX.Element {
 }
 
 const styles = StyleSheet.create({
-  handCardsLayout:{
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-    flexWrap: 'wrap'
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
+
 });
 
 export default Game;
