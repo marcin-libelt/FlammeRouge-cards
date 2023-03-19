@@ -6,7 +6,6 @@
  */
 
 import React, {memo, useEffect, useRef, useState} from 'react';
-import type {PropsWithChildren} from 'react';
 import type {
   DefaultRouterOptions,
   InitialState,
@@ -78,7 +77,6 @@ function Game({navigation}: NavigationAction): JSX.Element {
 
           <Button disabled={hand.length > 0} title='Draw 4 Cards' onPress={drawCards} />
 
-
           <CardBoard> 
             {hand.length > 0 ? (
               <CardDrawer
@@ -94,9 +92,6 @@ function Game({navigation}: NavigationAction): JSX.Element {
               </CardDrawer>
             ) : null}
           </CardBoard>
-
-
-
           <Button
             disabled={!deck.length && !stash.length && !stash.length}
             title={`Add exhausting card`} onPress={addExhaustedCard} 

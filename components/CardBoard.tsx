@@ -20,7 +20,7 @@ function CardBoard({children}) {
 
 const styles = StyleSheet.create({
   sectionContainer: {
-    backgroundColor: '#00FF00',
+    backgroundColor: '#0cc7cc',
     padding: 24,
   }
 });

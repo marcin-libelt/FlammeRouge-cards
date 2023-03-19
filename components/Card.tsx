@@ -1,22 +1,29 @@
 import {Button, ImageBackground, StyleSheet, TouchableOpacity, Text, View} from 'react-native';
+import type {PropsWithChildren, PropsWithoutRef} from 'react';
 
 const cardBackgroundImage = require('./../assets/images/cute-snowman-and-tree-pattern.jpg');
 
-function Card({value, onSelectCard, isRevealed}) {
+type CardProps = PropsWithoutRef<{
+  value: string[],
+  onSelectCard: Function,
+  isRevealed: boolean
+}>;
+
+function Card({value, onSelectCard, isRevealed}: CardProps): JSX.Element {
   return (
     <TouchableOpacity
       activeOpacity={0.8}
       style={styles.cardWrapper}
       onPress={onSelectCard}
     >
-      {/* <ImageBackground 
+      <ImageBackground 
         resizeMode='cover'
         source={cardBackgroundImage} 
         style={styles.cardBackground}
         defaultSource={cardBackgroundImage} 
-      > */}
+      >
       {isRevealed ? <Text style={styles.cardLabel}>{value}</Text> : null}
-      {/* </ImageBackground>   */}
+      </ImageBackground> 
     </TouchableOpacity>
   )    
 }
@@ -46,11 +53,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'white'
   },
   cardBackground: {
-    borderRadius: 50,
+    borderRadius: 10,
     width: '100%',
     height: '100%',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    overflow: 'hidden'
   }
 });
 
