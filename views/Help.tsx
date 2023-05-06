@@ -17,17 +17,15 @@ import {
 } from 'react-native';
 
 function Help({navigation}: NavigationAction): JSX.Element {
-  
   return (
     <SafeAreaView>
       <View style={styles.container}>
         <Text>Help Page</Text>
         <Button
-          title='Go to Game screen'
-          onPress={() => navigation.navigate('Game')} /> 
-        <Button
-          title='Help page'
-          onPress={() => navigation.navigate('Help')} /> 
+          title="Go to Game screen"
+          onPress={() => navigation.navigate('Game')}
+        />
+        <Button title="Help page" onPress={() => navigation.navigate('Help')} />
       </View>
     </SafeAreaView>
   );
@@ -37,14 +35,14 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: 'gray',
     height: '100%',
-    textAlign: 'center'
+    textAlign: 'center',
   },
   input: {
     height: 40,
     margin: 12,
     borderWidth: 1,
     padding: 10,
-  }
+  },
 });
 
 export default Help;

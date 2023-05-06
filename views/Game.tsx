@@ -5,7 +5,7 @@
  * @format
  */
 
-import React, {useState, useCallback, useMemo} from 'react';
+import React from 'react';
 import type {NavigationAction} from '@react-navigation/routers';
 import {
   SafeAreaView,
@@ -22,24 +22,17 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 import Debugger from '../components/Debugger';
 
 import RiderCards from '../components/RiderCards';
+import {useRiderCards} from '../hooks/useRiderCards';
 
-function Game({route, navigation}: NavigationAction): JSX.Element {
+function Game({navigation}: NavigationAction): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
+
+  const {gameData, setGameData, ridersData, setRidersData} = useRiderCards();
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
     color: 'black',
   };
-
-  const gameDataInitObject = {
-    ridersIds: route.params.players.map((rider: object): number => rider.id),
-    selectedCardsState: [],
-    locked: [],
-    cardsAreReaviled: false,
-  };
-
-  const [gameData, setGameData] = useState(gameDataInitObject);
-  const [ridersData, setRidersData] = useState(route.params.players);
 
   const isLastStep = () =>
     gameData.selectedCardsState.length === ridersData.length;

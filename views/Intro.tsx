@@ -6,7 +6,7 @@
  * @format
  */
 
-import React, {useCallback, useContext, useRef} from "react";
+import React, {useCallback, useContext, useRef} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -16,13 +16,13 @@ import {
   useColorScheme,
   View,
   Button,
-  TextBase
+  TextBase,
 } from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import type {NavigationAction} from '@react-navigation/routers';
-import RidersContext from "../context/RidersContext";
-import {charactersData} from "../data"; 
-import 'react-native-get-random-values'
+import RidersContext from '../hooks/useRiderCards';
+import {charactersData} from '../data';
+import 'react-native-get-random-values';
 
 function Intro({navigation}: NavigationAction) {
   const isDarkMode = useColorScheme() === 'dark';
@@ -34,19 +34,21 @@ function Intro({navigation}: NavigationAction) {
   const {gameRiders, setGameRiders} = useContext(RidersContext);
 
   //https://stackoverflow.com/questions/73957936/react-state-showing-only-last-value
-  const addCharacter = useCallback((code: string, color: string, key: number): void => {
+  const addCharacter = useCallback(
+    (code: string, color: string, key: number): void => {
+      const newCharacters = [...gameRiders];
 
-    const newCharacters = [...gameRiders];
+      const data = charactersData.find(c => c.code === code);
 
-    const data = charactersData.find(c => c.code === code);
+      //  data.stash = [];
+      // data.hand = [];
+      //  data.selected = '';
+      newCharacters.push(data);
 
- //  data.stash = [];
-   // data.hand = [];
-  //  data.selected = '';
-    newCharacters.push(data);
-
-    setGameRiders(newCharacters)
-  }, [gameRiders])
+      setGameRiders(newCharacters);
+    },
+    [gameRiders],
+  );
   return (
     <SafeAreaView style={backgroundStyle}>
       <StatusBar
@@ -55,21 +57,17 @@ function Intro({navigation}: NavigationAction) {
       />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}
-      >
+        style={backgroundStyle}>
         <Button
-          title='Go to Game screen'
-          onPress={() => navigation.navigate('Intro')} /> 
-        <Button
-          title='Help page'
-          onPress={() => navigation.navigate('Help')} /> 
+          title="Go to Game screen"
+          onPress={() => navigation.navigate('Intro')}
+        />
+        <Button title="Help page" onPress={() => navigation.navigate('Help')} />
       </ScrollView>
     </SafeAreaView>
   );
-};
+}
 
-const styles = StyleSheet.create({
-  
-});
+const styles = StyleSheet.create({});
 
 export default Intro;
