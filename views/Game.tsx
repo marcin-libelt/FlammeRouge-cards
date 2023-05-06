@@ -5,17 +5,8 @@
  * @format
  */
 
-import React, {memo, useEffect, useRef, useState} from 'react';
-import type {
-  DefaultRouterOptions,
-  InitialState,
-  NavigationAction,
-  NavigationState,
-  ParamListBase,
-  PartialState,
-  Route,
-  
-} from '@react-navigation/routers';
+import React, {useState, useCallback, useMemo} from 'react';
+import type {NavigationAction} from '@react-navigation/routers';
 import {
   SafeAreaView,
   ScrollView,
@@ -24,32 +15,53 @@ import {
   Text,
   useColorScheme,
   View,
-  Button
+  Button,
 } from 'react-native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
-import CardBoard from '../components/CardBoard';
-import useCards from '../hooks/useCards';
-import CardDrawer from '../components/CardDrawer';
+import Debugger from '../components/Debugger';
 
-function Game({navigation}: NavigationAction): JSX.Element {
-  const {
-    addExhaustedCard,
-    selectCard,
-    drawCards,
-    resetCards,
-    revealCards,
-    deck,
-    hand,
-    stash,
-    selectedCard,
-    isRevealed
-  } = useCards();
+import RiderCards from '../components/RiderCards';
 
+function Game({route, navigation}: NavigationAction): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+    color: 'black',
+  };
+
+  const gameDataInitObject = {
+    ridersIds: route.params.players.map((rider: object): number => rider.id),
+    selectedCardsState: [],
+    locked: [],
+    cardsAreReaviled: false,
+  };
+
+  const [gameData, setGameData] = useState(gameDataInitObject);
+  const [ridersData, setRidersData] = useState(route.params.players);
+
+  const isLastStep = () =>
+    gameData.selectedCardsState.length === ridersData.length;
+
+  const revealAllCards = () => {
+    setGameData({...gameData, cardsAreReaviled: true});
+  };
+
+  const startNewRound = () => {
+    const newGameData = {...gameData};
+    const newRidersData = [...ridersData];
+
+    newGameData.cardsAreReaviled = false;
+    newGameData.selectedCardsState.length = 0;
+    newGameData.locked.length = 0;
+
+    newRidersData.forEach(rider => {
+      rider.selected.length = 0;
+    });
+
+    setGameData(newGameData);
+    setRidersData(newRidersData);
   };
 
   return (
@@ -61,60 +73,67 @@ function Game({navigation}: NavigationAction): JSX.Element {
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}>
-        <View
-          style={{
-            padding: 20
-          }}>
+        <Text style={styles.heading}>Game</Text>
+        <View>
           <Button
             title="Go to Intro"
-            onPress={() => navigation.navigate('Intro')}
+            onPress={() => navigation.navigate('Configure')}
           />
-          <View>
-            <Text>Deck: { deck.map((n) => `◼️`)}</Text>
-            <Text>Stash: { stash.map((n) => `◼️`)}</Text>
-          </View>
-          <Button title='ReInit Deck' onPress={resetCards} />
-
-          <Button disabled={hand.length > 0} title='Draw 4 Cards' onPress={drawCards} />
-
-          <CardBoard> 
-            {hand.length > 0 ? (
-              <CardDrawer
-                hand={hand} 
-                selectCard={selectCard} 
-                isRevealed={isRevealed}
-              >
-                <Button 
-                  onPress={revealCards} 
-                  title='Preview cards'
-                  disabled={isRevealed}
-                />
-              </CardDrawer>
-            ) : null}
-          </CardBoard>
-          <Button
-            disabled={!deck.length && !stash.length && !stash.length}
-            title={`Add exhausting card`} onPress={addExhaustedCard} 
-          />
-        </View>
-        <View
-          style={{
-            padding: 20,
-            backgroundColor: 'orange',
-          }}>
-          <Text>Hand {hand}</Text>
-          <Text>Stash {stash}</Text>
-          <Text>Deck {deck}</Text>
-          <Text>Selected Card {selectedCard}</Text>
+          {ridersData.map(rider => (
+            <RiderCards
+              key={rider.id}
+              riderId={rider.id}
+              ridersData={ridersData}
+              gameData={gameData}
+              riderData={rider}
+              setGameData={setGameData}
+              setRidersData={setRidersData}
+            />
+          ))}
+          {isLastStep() ? (
+            !gameData.cardsAreReaviled ? (
+              <Button
+                color={'green'}
+                onPress={() => revealAllCards()}
+                title={'Reavil cards!'}
+              />
+            ) : (
+              <Button
+                onPress={() => startNewRound()}
+                title={'Start new round!'}></Button>
+            )
+          ) : (
+            ''
+          )}
         </View>
 
+        <Debugger data={{ridersData, gameData}} />
       </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-
+  heading: {
+    color: 'black',
+    fontSize: 24,
+    textAlign: 'center',
+  },
+  smallCardsWrapper: {
+    display: 'flex',
+    flexDirection: 'row',
+    paddingVertical: 10,
+  },
+  smallCard: {
+    width: 30,
+    height: 30,
+    lineHeight: 30,
+    textAlign: 'center',
+    backgroundColor: 'black',
+    borderRadius: 3,
+    margin: 2,
+    display: 'flex',
+  },
 });
 
 export default Game;

@@ -6,7 +6,7 @@
  * @format
  */
 
-import React from "react";
+import React, {useCallback, useContext, useRef} from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -15,20 +15,38 @@ import {
   Text,
   useColorScheme,
   View,
-  Button
+  Button,
+  TextBase
 } from 'react-native';
-import {
-  Colors
-} from 'react-native/Libraries/NewAppScreen';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
+import type {NavigationAction} from '@react-navigation/routers';
+import RidersContext from "../context/RidersContext";
+import {charactersData} from "../data"; 
+import 'react-native-get-random-values'
 
-
-function Intro({navigation: { goBack, navigate }}) {
+function Intro({navigation}: NavigationAction) {
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
+  const {gameRiders, setGameRiders} = useContext(RidersContext);
+
+  //https://stackoverflow.com/questions/73957936/react-state-showing-only-last-value
+  const addCharacter = useCallback((code: string, color: string, key: number): void => {
+
+    const newCharacters = [...gameRiders];
+
+    const data = charactersData.find(c => c.code === code);
+
+ //  data.stash = [];
+   // data.hand = [];
+  //  data.selected = '';
+    newCharacters.push(data);
+
+    setGameRiders(newCharacters)
+  }, [gameRiders])
   return (
     <SafeAreaView style={backgroundStyle}>
       <StatusBar
@@ -39,35 +57,19 @@ function Intro({navigation: { goBack, navigate }}) {
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}
       >
-        <Text>Hello</Text>
-        <Button
-          title='Go Back'
-          onPress={() => goBack()} /> 
         <Button
           title='Go to Game screen'
-          onPress={() => navigate('Game')} />
+          onPress={() => navigation.navigate('Intro')} /> 
+        <Button
+          title='Help page'
+          onPress={() => navigation.navigate('Help')} /> 
       </ScrollView>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
+  
 });
 
 export default Intro;
