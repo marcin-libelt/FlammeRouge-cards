@@ -1,4 +1,3 @@
-import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 
 function Debugger({data}): JSX.Element {
@@ -16,8 +15,9 @@ function Debugger({data}): JSX.Element {
 
 const styles = StyleSheet.create({
   debug: {
-    padding: 20,
+    padding: 10,
     backgroundColor: 'orange',
+    marginTop: 5,
   },
   section: {
     marginBottom: 10,

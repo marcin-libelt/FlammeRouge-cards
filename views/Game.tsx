@@ -7,32 +7,14 @@
 
 import React from 'react';
 import type {NavigationAction} from '@react-navigation/routers';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-  Button,
-} from 'react-native';
-
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+import {StyleSheet, Button} from 'react-native';
 import Debugger from '../components/Debugger';
-
 import RiderCards from '../components/RiderCards';
 import {useRiderCards} from '../hooks/useRiderCards';
+import Layout from './Layout';
 
 function Game({navigation}: NavigationAction): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
   const {gameData, setGameData, ridersData, setRidersData} = useRiderCards();
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-    color: 'black',
-  };
 
   const isLastStep = () =>
     gameData.selectedCardsState.length === ridersData.length;
@@ -58,51 +40,39 @@ function Game({navigation}: NavigationAction): JSX.Element {
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
+    <Layout title={'Game'}>
+      <Button
+        title="Go to Intro"
+        onPress={() => navigation.navigate('Configure')}
       />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Text style={styles.heading}>Game</Text>
-        <View>
+      {ridersData.map(rider => (
+        <RiderCards
+          key={rider.id}
+          riderId={rider.id}
+          ridersData={ridersData}
+          gameData={gameData}
+          riderData={rider}
+          setGameData={setGameData}
+          setRidersData={setRidersData}
+        />
+      ))}
+      {isLastStep() ? (
+        !gameData.cardsAreReaviled ? (
           <Button
-            title="Go to Intro"
-            onPress={() => navigation.navigate('Configure')}
+            color={'green'}
+            onPress={() => revealAllCards()}
+            title={'Reavil cards!'}
           />
-          {ridersData.map(rider => (
-            <RiderCards
-              key={rider.id}
-              riderId={rider.id}
-              ridersData={ridersData}
-              gameData={gameData}
-              riderData={rider}
-              setGameData={setGameData}
-              setRidersData={setRidersData}
-            />
-          ))}
-          {isLastStep() ? (
-            !gameData.cardsAreReaviled ? (
-              <Button
-                color={'green'}
-                onPress={() => revealAllCards()}
-                title={'Reavil cards!'}
-              />
-            ) : (
-              <Button
-                onPress={() => startNewRound()}
-                title={'Start new round!'}></Button>
-            )
-          ) : (
-            ''
-          )}
-        </View>
-
-        <Debugger data={{ridersData, gameData}} />
-      </ScrollView>
-    </SafeAreaView>
+        ) : (
+          <Button
+            onPress={() => startNewRound()}
+            title={'Start new round!'}></Button>
+        )
+      ) : (
+        ''
+      )}
+      <Debugger data={(gameData, ridersData)} />
+    </Layout>
   );
 }
 

@@ -5,29 +5,18 @@
  * @format
  */
 
-import React from 'react';
-import type {NavigationAction} from '@react-navigation/routers';
-import {
-  StyleSheet,
-  Button,
-  SafeAreaView,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import {StyleSheet, Button} from 'react-native';
+import Layout from './Layout';
 
-function Help({navigation}: NavigationAction): JSX.Element {
+function Help({navigation}): JSX.Element {
   return (
-    <SafeAreaView>
-      <View style={styles.container}>
-        <Text>Help Page</Text>
-        <Button
-          title="Go to Game screen"
-          onPress={() => navigation.navigate('Game')}
-        />
-        <Button title="Help page" onPress={() => navigation.navigate('Help')} />
-      </View>
-    </SafeAreaView>
+    <Layout title={'Help Page'}>
+      <Button
+        title="Go to Game screen"
+        onPress={() => navigation.navigate('Game')}
+      />
+      <Button title="Help page" onPress={() => navigation.navigate('Help')} />
+    </Layout>
   );
 }
 

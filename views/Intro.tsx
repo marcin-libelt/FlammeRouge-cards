@@ -1,73 +1,103 @@
-/**
- * Intro screen of App
- * Allows user to select the Character and prepare to game
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
-import React, {useCallback, useContext, useRef} from 'react';
+import React, {useState} from 'react';
 import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
+  Alert,
+  ImageBackground,
+  Modal,
   StyleSheet,
   Text,
-  useColorScheme,
+  Pressable,
   View,
-  Button,
-  TextBase,
 } from 'react-native';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
-import type {NavigationAction} from '@react-navigation/routers';
-import RidersContext from '../hooks/useRiderCards';
-import {charactersData} from '../data';
-import 'react-native-get-random-values';
+import Layout from './Layout';
 
-function Intro({navigation}: NavigationAction) {
-  const isDarkMode = useColorScheme() === 'dark';
+function Intro(): JSX.Element {
+  const [modalVisible, setModalVisible] = useState(false);
+  const bg = require('./../assets/images/disnay-pattern.png');
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  const {gameRiders, setGameRiders} = useContext(RidersContext);
-
-  //https://stackoverflow.com/questions/73957936/react-state-showing-only-last-value
-  const addCharacter = useCallback(
-    (code: string, color: string, key: number): void => {
-      const newCharacters = [...gameRiders];
-
-      const data = charactersData.find(c => c.code === code);
-
-      //  data.stash = [];
-      // data.hand = [];
-      //  data.selected = '';
-      newCharacters.push(data);
-
-      setGameRiders(newCharacters);
-    },
-    [gameRiders],
-  );
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Button
-          title="Go to Game screen"
-          onPress={() => navigation.navigate('Intro')}
-        />
-        <Button title="Help page" onPress={() => navigation.navigate('Help')} />
-      </ScrollView>
-    </SafeAreaView>
+    <Layout>
+      <View style={styles.centeredView}>
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            Alert.alert('Modal has been closed.');
+            setModalVisible(!modalVisible);
+          }}>
+          <View style={styles.modalView}>
+            <ImageBackground
+              source={bg}
+              resizeMode="repeat"
+              style={[styles.bg]}>
+              <View style={{borderRadius: 20, width: '100%', height: '100%'}}>
+                <Text style={styles.modalText}>Hello World!</Text>
+                <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={() => setModalVisible(!modalVisible)}>
+                  <Text style={styles.textStyle}>Hide Modal</Text>
+                </Pressable>
+              </View>
+            </ImageBackground>
+          </View>
+        </Modal>
+        <Pressable
+          style={[styles.button, styles.buttonOpen]}
+          onPress={() => setModalVisible(true)}>
+          <Text style={styles.textStyle}>Show Modal</Text>
+        </Pressable>
+      </View>
+    </Layout>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    width: '80%',
+    borderRadius: 25,
+    borderWidth: 10,
+    borderColor: '#fff',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: '#F194FF',
+  },
+  buttonClose: {
+    backgroundColor: '#2196F3',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  bg: {
+    width: '100%',
+    borderRadius: 25,
+  },
+});
 
 export default Intro;

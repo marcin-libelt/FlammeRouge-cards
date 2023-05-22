@@ -1,13 +1,35 @@
-export const charactersDataObj = {
-  rouler: {
-    label: 'Rouler',
-    deck: ['3', '3', '3', '4', '4', '5', '5', '6', '7', '7', '7'],
-  },
-  sprinter: {
-    label: 'Sprinter',
-    deck: ['2', '2', '3', '3', '4', '5', '7', '9', '8', '9', '9'],
-  },
-};
+/** Generates random person name: 'firstname lastname' based on given arrays */
+export const getFakeName = () => {
+  const firstName = [
+    'Jan',
+    'Piotr',
+    'Kamil',
+    'Marcin',
+    'Dominik',
+    'Teodor',
+    'Mirosław',
+  ];
 
-export const revealInterval = 3000;
-export const exhaustionCardValue = '2';
+  const lastName = [
+    'Nowak',
+    'Kowalski',
+    'Prądkowski',
+    'Niemirow',
+    'Karmasz',
+    'Libelt',
+    'Piotrowski',
+    'Grycuk',
+    'Maciejewski',
+    'Modzelewski',
+  ];
+
+  const getName = data => {
+    const m = 100,
+      random = Math.random() * m + 1, // to avoid zero value
+      step = m / data.length,
+      section = Math.ceil(random / step);
+    return data[section - 1]; // zero based index
+  };
+
+  return `${getName(firstName)} ${getName(lastName)}`;
+};

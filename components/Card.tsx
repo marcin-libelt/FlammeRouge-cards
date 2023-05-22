@@ -1,14 +1,5 @@
-import {
-  Button,
-  ImageBackground,
-  StyleSheet,
-  TouchableOpacity,
-  Text,
-  View,
-} from 'react-native';
+import {StyleSheet, Text} from 'react-native';
 import type {PropsWithoutRef} from 'react';
-
-const cardBackgroundImage = require('./../assets/images/cute-snowman-and-tree-pattern.jpg');
 
 type CardProps = PropsWithoutRef<{
   value: string[];

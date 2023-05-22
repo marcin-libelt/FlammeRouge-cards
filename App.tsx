@@ -12,7 +12,9 @@ import {useColorScheme} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Game from './views/Game';
 import Configure from './views/Configure';
+import Help from './views/Help';
 import RiderCardsProvider from './hooks/useRiderCards';
+import Intro from './views/Intro';
 
 const Stack = createNativeStackNavigator();
 
@@ -33,7 +35,7 @@ function App(): JSX.Element {
           {/* <Stack.Screen name="Intro" component={Intro} /> */}
           <Stack.Screen name="Configure" component={Configure} />
           <Stack.Screen name="Game" component={Game} />
-          {/*<Stack.Screen name="Help" component={Help} /> */}
+          <Stack.Screen name="Help" component={Help} />
         </Stack.Navigator>
       </NavigationContainer>
     </RiderCardsProvider>
