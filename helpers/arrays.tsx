@@ -6,3 +6,7 @@ export const shuffle = inputArray => {
 
   return inputArray;
 };
+
+export const getRandomInt = (max = 10) => {
+  return Math.floor(Math.random() * Math.floor(max));
+};
