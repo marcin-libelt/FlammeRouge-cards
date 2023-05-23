@@ -1,15 +1,13 @@
 import React, {useRef} from 'react';
-import type {NavigationAction} from '@react-navigation/routers';
 import {View} from 'react-native';
 import {charactersDataObj} from '../config';
 import {useRiderCards} from '../hooks/useRiderCards';
 import NewRiderForm from '../components/NewRiderForm';
 import Layout from './Layout';
-import Debugger from '../components/Debugger';
 import RidersList from '../components/RidersList';
 import AppButton from '../components/Button';
 
-function Configure({navigation}: NavigationAction): JSX.Element {
+function Configure({navigation}): JSX.Element {
   const indexer = useRef(100);
 
   const {ridersData, setRidersData, gameData, setGameData} = useRiderCards();
@@ -52,7 +50,6 @@ function Configure({navigation}: NavigationAction): JSX.Element {
         <NewRiderForm onAddRider={addRider} />
       </View>
       <AppButton onPress={startGame} title="Start game" variant="primary" />
-      <Debugger data={{ridersData, gameData}} />
     </Layout>
   );
 }

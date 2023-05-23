@@ -9,13 +9,15 @@ function RidersList() {
   return (
     <View style={styles.topInfo}>
       {!ridersData.length ? (
-        <>
-          <Text>Select rider types.</Text>
-          <Text>Typical game assumes 2 riders: Sprinter and Rouler.</Text>
-        </>
+        <View>
+          <Text
+            style={
+              styles.legend
+            }>{`Select rider types.\nTypical game assumes 2 riders: Sprinter and Rouler.`}</Text>
+        </View>
       ) : (
         <>
-          <Text>{'Riders:'}</Text>
+          <Text style={styles.legend}>{`Your riders:`}</Text>
           {ridersData.map((rider, index) => (
             <RiderPanel
               key={rider.id}
@@ -29,6 +31,12 @@ function RidersList() {
 }
 
 const styles = StyleSheet.create({
+  legend: {
+    color: 'white',
+    marginLeft: 15,
+    marginVertical: 5,
+    lineHeight: 20,
+  },
   topInfo: {
     backgroundColor: 'black',
     color: 'white',

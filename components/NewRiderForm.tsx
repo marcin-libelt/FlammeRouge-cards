@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import {Button, StyleSheet, View} from 'react-native';
-import Debugger from './Debugger';
 import RiderButton from './RiderButton';
 import {charactersDataObj} from '../config';
 import {getFakeName} from '../data';

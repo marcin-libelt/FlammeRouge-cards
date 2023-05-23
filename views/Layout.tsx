@@ -8,6 +8,8 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
+import Debugger from '../components/Debugger';
+import {useRiderCards} from '../hooks/useRiderCards';
 
 function Layout({title = '', children}): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -15,6 +17,8 @@ function Layout({title = '', children}): JSX.Element {
     height: '100%',
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
+
+  const {gameData, ridersData} = useRiderCards();
 
   return (
     <SafeAreaView style={backgroundStyle}>
@@ -28,6 +32,7 @@ function Layout({title = '', children}): JSX.Element {
         <View style={styles.pageWrapper}>
           <Text style={styles.heading}>{title}</Text>
           {children}
+          <Debugger data={{ridersData, gameData}} />
         </View>
       </ScrollView>
     </SafeAreaView>
