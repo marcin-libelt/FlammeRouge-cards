@@ -1,6 +1,6 @@
 # 🚧 Flamme Rouge Cards App! 🚧
 
-This Android app makes the [Flamme Rouge](https://boardgamegeek.com/boardgame/199478/flamme-rouge) board gameplay much easier and faster.
+This Android app makes the [Flamme Rouge](https://boardgamegeek.com/boardgame/199478/flamme-rouge) board gameplay much easier and more enjoyable.
 
 ## Replaces the player's card deck.
 
